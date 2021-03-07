@@ -9,11 +9,13 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "esp_system.h"
-
+#include "onboard_led.h"
 
 void app_main(void)
 {
-    
+    onboard_led_init();
+    onboard_led_setrgb(0x000000);
+
     while(true)
     {
 
