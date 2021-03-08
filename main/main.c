@@ -14,19 +14,21 @@
 
 void app_main(void)
 {
-    onboard_led_init();
-    onboard_led_setrgb(0x000000);
+    // onboard_led_init();
+    // onboard_led_setrgb(0x000000);
 
-    gpio_set_direction(11, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(11, GPIO_PULLUP_ONLY);
+    gpio_set_direction(13, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(13, GPIO_PULLUP_ONLY);
 
     motor_install();
-    motor_t *m = motor_init(1, 2, LEDC_CHANNEL_0, LEDC_CHANNEL_1, LEDC_LOW_SPEED_MODE, LEDC_LOW_SPEED_MODE);
-    motor_t *m = motor_init(3, 4, LEDC_CHANNEL_2, LEDC_CHANNEL_3, LEDC_LOW_SPEED_MODE, LEDC_LOW_SPEED_MODE);
+    motor_t *m = motor_init(25, 26, LEDC_CHANNEL_0, LEDC_CHANNEL_1, LEDC_LOW_SPEED_MODE, LEDC_LOW_SPEED_MODE);
 
     while(true)
     {
-        
+        if(!gpio_get_level(13))
+            motor_set(m, 255);
+        else
+            motor_set(m, 0);
         usleep(1000 * 10);
     }
 
