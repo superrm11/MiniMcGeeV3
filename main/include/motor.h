@@ -10,10 +10,9 @@ typedef struct
 {
     gpio_num_t gpio_a;
     gpio_num_t gpio_b;
-    ledc_channel_t channel_a;
-    ledc_channel_t channel_b;   
-    ledc_mode_t mode_a;
-    ledc_mode_t mode_b;
+    ledc_channel_t channel;
+    ledc_mode_t mode;
+    ledc_channel_config_t channel_config;
 } motor_t;
 
 /**
@@ -29,8 +28,7 @@ void motor_install();
  * LEDC_HIGH_SPEED_MODE is only available on the ESP32-WROOM/ESP32-WROVER series.
  */
 motor_t* motor_init(gpio_num_t gpio_a, gpio_num_t gpio_b, 
-                    ledc_channel_t channel_a, ledc_channel_t channel_b, 
-                    ledc_mode_t mode_a, ledc_mode_t mode_b);
+                    ledc_channel_t channel, ledc_mode_t mode);
 
 /**
  * Set the speed of the motor. Speed is 8 bit, between -255 and +255, with 0 being stopped.

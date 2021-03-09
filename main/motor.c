@@ -36,39 +36,27 @@ void motor_install()
  * LEDC_HIGH_SPEED_MODE is only available on the ESP32-WROOM/ESP32-WROVER series.
  */
 motor_t* motor_init(gpio_num_t gpio_a, gpio_num_t gpio_b, 
-                    ledc_channel_t channel_a, ledc_channel_t channel_b, 
-                    ledc_mode_t mode_a, ledc_mode_t mode_b)
+                    ledc_channel_t channel, ledc_mode_t mode)
 {
     motor_t* m = malloc(sizeof(motor_t));
     
     m->gpio_a = gpio_a;
     m->gpio_b = gpio_b;
-    m->channel_a = channel_a;
-    m->channel_b = channel_b;
-    m->mode_a = mode_a;
-    m->mode_b = mode_b;
+    m->channel = channel;
+    m->mode = mode;
 
-    ledc_channel_config_t channel_a_config = {
+    ledc_channel_config_t channel_config = {
         .gpio_num = m->gpio_a,
-        .speed_mode = m->mode_a,
-        .channel = m->channel_a,
+        .speed_mode = m->mode,
+        .channel = m->channel,
         .intr_type = LEDC_INTR_DISABLE,
-        .timer_sel = (m->mode_a == LEDC_LOW_SPEED_MODE) ? LEDC_TIMER_0 : LEDC_TIMER_1,
+        .timer_sel = (m->mode == LEDC_LOW_SPEED_MODE) ? LEDC_TIMER_0 : LEDC_TIMER_1,
         .duty = 256,
         .hpoint = 0
     };
-    ledc_channel_config(&channel_a_config);
+    ledc_channel_config(&channel_config);
 
-    ledc_channel_config_t channel_b_config = {
-        .gpio_num = m->gpio_b,
-        .speed_mode = m->mode_b,
-        .channel = m->channel_b,
-        .intr_type = LEDC_INTR_DISABLE,
-        .timer_sel = (m->mode_b == LEDC_LOW_SPEED_MODE) ? LEDC_TIMER_0 : LEDC_TIMER_1,
-        .duty = 256,
-        .hpoint = 0
-    };
-    ledc_channel_config(&channel_b_config);
+    m->channel_config = channel_config;
 
     return m;
 }
@@ -78,16 +66,26 @@ motor_t* motor_init(gpio_num_t gpio_a, gpio_num_t gpio_b,
  */
 void motor_set(motor_t *motor, int speed)
 {
-    int speed_a = (speed > 0) ? speed : 0;
-    int speed_b = (speed < 0) ? -speed : 0;
 
+    // Whenever the motor changes direction, switch the PWM pin and steady-state pin
+    if(speed > 0 && motor->channel_config.gpio_num == motor->gpio_b)
+    {
+        motor->channel_config.gpio_num = motor->gpio_a;
+        ledc_channel_config(&(motor->channel_config));
+        gpio_set_direction(motor->gpio_b, GPIO_MODE_OUTPUT);
+        
+    } else if(speed < 0 && motor->channel_config.gpio_num == motor->gpio_a)
+    {
+        motor->channel_config.gpio_num = motor->gpio_b;
+        ledc_channel_config(&(motor->channel_config));
+        gpio_set_direction(motor->gpio_a, GPIO_MODE_OUTPUT);
+        
+    }
+        
     // Motor speed is inverse to duty cycle, for some reason.
     // 0 = full speed, 256 = stopped
-    speed_a = 256 - speed_a;
-    speed_b = 256 - speed_b;
+    ledc_set_duty(motor->mode, motor->channel, 256 - abs(speed));
+    gpio_set_level((speed > 0) ? motor->gpio_b : motor->gpio_a, 1);
 
-    ledc_set_duty(motor->mode_a, motor->channel_a, speed_a);
-    ledc_set_duty(motor->mode_b, motor->channel_b, speed_b);
-    ledc_update_duty(motor->mode_a, motor->channel_a);
-    ledc_update_duty(motor->mode_b, motor->channel_b);
+    ledc_update_duty(motor->mode, motor->channel);
 }

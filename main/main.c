@@ -21,7 +21,7 @@ void app_main(void)
     gpio_set_pull_mode(13, GPIO_PULLUP_ONLY);
 
     motor_install();
-    motor_t *m = motor_init(25, 26, LEDC_CHANNEL_0, LEDC_CHANNEL_1, LEDC_LOW_SPEED_MODE, LEDC_LOW_SPEED_MODE);
+    motor_t *m = motor_init(25, 26, LEDC_CHANNEL_0, LEDC_LOW_SPEED_MODE);
 
     while(true)
     {
