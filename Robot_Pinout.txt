@@ -1,0 +1,34 @@
+BANNED PINS: GPIO2, RX, TX
+
+ANALOG IN:
+LF - VP (GPIO36) (ADC1_CH0) (1Mohm pulldown) (Verified)
+RF - VN (GPIO39) (ADC1_CH3) (1Mohm pulldown) (Verified)
+LR - VDET_1 (GPIO34) (ADC1_CH6) (1Mohm pulldown) (Verified)
+RR - VDET_2 (GPIO35) (ADC1_CH7) (1Mohm pulldown) (Verified)
+
+Voltage Sensor - 32K_XP (GPIO32) (ADC1_CH4): Battery -> 6.8K Res -> GPIO -> 5.1K Res -> GND (Verified)
+
+I2C:
+SCL - GPIO0 -> 3.3K PULLUP (to 3.3V) -> sensor (Verified)
+SDA - GPIO15 -> 3.3K PULLUP (to 3.3V) -> sensor (Verified)
+
+MOTOR PWM:
+LF_DIR_0 = GPIO33 (Verified)
+LF_DIR_1 = GPIO25 (Verified)
+LF_DRIVE_0 = GPIO26 (Verified)
+LF_DRIVE_1 = GPIO27 (Verified)
+
+LR_DRIVE_0 = GPIO4 (Verified)
+LR_DRIVE_1 = GPIO13 (Verfied)
+LR_DIR_0 = GPIO12  (Verfied)
+LR_DIR_1 = GPIO14 (Verified)
+
+RF_DIR_0 = GPIO23 (Verified)
+RF_DIR_1 = GPIO22 (Verified)
+RF_DRIVE_0 = GPIO16 (Verified)
+RF_DRIVE_1 = GPIO17 (Verified)
+
+RR_DRIVE_0 = GPIO21 (Verified)
+RR_DRIVE_1 = GPIO19 (Verified)
+RR_DIR_0 = GPIO18 (Verified)
+RR_DIR_1 = GPIO5 (Verified)

@@ -45,6 +45,12 @@ motor_t* motor_init(gpio_num_t gpio_a, gpio_num_t gpio_b,
     m->channel = channel;
     m->mode = mode;
 
+    gpio_set_direction(m->gpio_a, GPIO_MODE_OUTPUT);
+    gpio_set_direction(m->gpio_b, GPIO_MODE_OUTPUT);
+
+    gpio_set_level(m->gpio_a, 0);
+    gpio_set_level(m->gpio_b, 0);
+
     ledc_channel_config_t channel_config = {
         .gpio_num = m->gpio_a,
         .speed_mode = m->mode,
